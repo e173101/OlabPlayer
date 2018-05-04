@@ -25,10 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    cvmatandqimage.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    cvmatandqimage.h
 
 FORMS += \
         mainwindow.ui
+
+
+#OpenCV
+INCLUDEPATH += C:/OpenCV/2.4.13/include
+LIBS += C:/OpenCV/2.4.13_SOURCES/lib/*.dll.a

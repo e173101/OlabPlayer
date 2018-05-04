@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QtGui>
 
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+
 namespace Ui {
 class MainWindow;
 }
@@ -21,11 +24,17 @@ private slots:
 
     void on_pushButton_snapshot_clicked();
 
+    void on_pushButton_openVideo_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer timer;
     QVector<int> frameBoxLife;
     QVector<QLabel*> frameBox;
+    QVector<QLabel*> frameImg;
+
+    cv::VideoCapture video;
+    QImage mainVideo;
 };
 
 #endif // MAINWINDOW_H

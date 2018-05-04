@@ -16,11 +16,38 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QLabel" name="label_video">
+      <property name="text">
+       <string>videoLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_openVideo">
+      <property name="text">
+       <string>open video</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="pushButton_snapshot">
       <property name="text">
        <string>snapshot</string>
       </property>
      </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -54,6 +81,12 @@
      </layout>
     </item>
    </layout>
+   <zorder>pushButton_snapshot</zorder>
+   <zorder>label_video</zorder>
+   <zorder>pushButton_openVideo</zorder>
+   <zorder>verticalSpacer</zorder>
+   <zorder>radioButton_end</zorder>
+   <zorder>radioButton_start</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
