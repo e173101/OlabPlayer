@@ -25,6 +25,7 @@ private:
     Ui::MainWindow *ui;
     QTimer timer;
     QVector<int> frameBoxLife;
+    QVector<QLabel*> frameBox;
 };
 
 #endif // MAINWINDOW_H
