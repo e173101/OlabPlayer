@@ -7,6 +7,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 
+#include "matproducer.h"
 
 
 namespace Ui {
@@ -52,6 +53,10 @@ private:
     cv::VideoCapture video;
     QImage mainVideo;
     bool flagPlay;
+
+    MatProducer *matProThread;
+    QQueue<Mat> matBuf;
+    int maxBufSize;
 };
 
 #endif // MAINWINDOW_H

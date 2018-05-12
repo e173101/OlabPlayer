@@ -17,7 +17,7 @@
 #define DEFAULT_VIDEO_COLS 640
 #define DEFAULT_VIDEO_ROWS 480
 
-
+#define MAT_BUF_SIZE 10
 
 //#define PRINTDEBUG
 
@@ -34,10 +34,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->spinBox_cols->setValue(DEFAULT_VIDEO_COLS);
     ui->spinBox_rows->setValue(DEFAULT_VIDEO_ROWS);
     ui->label_video->setMinimumSize(DEFAULT_VIDEO_COLS,DEFAULT_VIDEO_ROWS);
+
+    maxBufSize = MAT_BUF_SIZE;
 }
 
 MainWindow::~MainWindow()
 {
+    matProThread->stop();
+    matProThread->wait();
+    delete matProThread;
     delete ui;
     //if exit with frame servive
     for(int i=0;i<frameBoxLife.size();i++)
@@ -67,11 +72,12 @@ void MainWindow::refresh()
 #ifdef PRINTDEBUG
         qDebug() << strTotalBoxStaus;
 #endif
+
         //video play
         cv::Mat mat;
-        if (video.isOpened())
+        if (0<matBuf.size())
         {
-            video >> mat;
+            mat = matBuf.dequeue();
             if (!mat.empty())
             {
                 mainVideo = QtOcv::mat2Image(mat);
@@ -80,6 +86,7 @@ void MainWindow::refresh()
             else
                 flagPlay=false;
         }
+        ui->statusBar->showMessage("Buf of mats:"+QString::number(matBuf.size())+"fps:"+QString::number(1000.0/FRAMEINTERVAL));
     }
 }
 
@@ -114,11 +121,7 @@ int MainWindow::addSnapshot(situation s)
         QImage clip = mainVideo.scaled(QSize(FRAMEIMG_W,FRAMEIMG_H));
         frameImg[ind]->resize(QSize(FRAMEIMG_W,FRAMEIMG_H));
         frameImg[ind]->setPixmap(QPixmap::fromImage(clip));
-        //        frameImg[ind]->setFrameShape(QFrame::Panel);
-        //        frameImg[ind]->setFrameShadow(QFrame::Raised);
-        //        frameImg[ind]->setAutoFillBackground(true);
         frameImg[ind]->move(ui->radioButton_start->pos());
-        //frameImg[ind]->show();
         connect(frameBox[ind],SIGNAL(pressed()),frameImg[ind],SLOT(show()));
         connect(frameBox[ind],SIGNAL(released()),frameImg[ind],SLOT(hide()));
     }
@@ -149,17 +152,41 @@ void MainWindow::on_pushButton_snapshot_clicked()
 
 void MainWindow::on_pushButton_openVideo_clicked()
 {
-    QString videoFileName = QFileDialog::getOpenFileName(this, tr("Open a video file"));
-    if (!videoFileName.isEmpty())
+    QStringList items;
+    items << tr("Cameral") << tr("File") ;
+    bool ok;
+    QString item = QInputDialog::getItem(this, tr("Select a input:"),
+                                         tr("input:"), items, 0, false, &ok);
+    if (ok && !item.isEmpty())
     {
-        video = cv::VideoCapture(videoFileName.toStdString());
-        if (video.isOpened())
-        {
-            ui->statusBar->showMessage("Open file "+videoFileName + " Success");
-            refresh();
+        if("File"==item){
+            QString videoFileName = QFileDialog::getOpenFileName(this, tr("Open a video file"));
+            if (!videoFileName.isEmpty())
+            {
+                video = cv::VideoCapture(videoFileName.toStdString());
+                if (video.isOpened())
+                {
+                    ui->statusBar->showMessage("Open file "+videoFileName + " Success");
+                    matProThread = new MatProducer(&video,&matBuf,maxBufSize);
+                    matProThread->start();
+                }
+                else
+                    ui->statusBar->showMessage(videoFileName + " is not a good VIDEO file",1000);
+            }
         }
-        else
-            ui->statusBar->showMessage(videoFileName + " is not a good VIDEO file",1000);
+        if("Cameral"==item)
+        {
+            video = cv::VideoCapture(0);
+            if (video.isOpened())
+            {
+                ui->statusBar->showMessage("Open file cameral 0");
+                matProThread = new MatProducer(&video,&matBuf,maxBufSize);
+                matProThread->start();
+            }
+            else
+                ui->statusBar->showMessage("can't open cameral 0",1000);
+
+        }
     }
 }
 

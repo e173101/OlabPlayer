@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    cvmatandqimage.cpp
+    cvmatandqimage.cpp \
+    matproducer.cpp
 
 HEADERS += \
         mainwindow.h \
-    cvmatandqimage.h
+    cvmatandqimage.h \
+    matproducer.h
 
 FORMS += \
         mainwindow.ui
