@@ -38,4 +38,4 @@ FORMS += \
 
 #OpenCV
 INCLUDEPATH += C:/OpenCV/2.4.13/include
-LIBS += C:/OpenCV/2.4.13_SOURCES/lib/*.dll.a
+LIBS += C:/OpenCV/2.4.13/lib/*.dll.a

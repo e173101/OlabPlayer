@@ -12,7 +12,12 @@
 #define FRAMEBOX_TTL (FRAMEINTERVAL*100)    //time to live, units are ms
 #define FRAMEIMG_H 160
 #define FRAMEIMG_W 200
-#define FRAMEINS_SHIFT QPoint(0,-80)
+#define FRAMEINS_SHIFT QPoint(-50,-160)
+
+#define DEFAULT_VIDEO_COLS 640
+#define DEFAULT_VIDEO_ROWS 480
+
+
 
 //#define PRINTDEBUG
 
@@ -20,10 +25,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     ui->setupUi(this);
     timer.setInterval(FRAMEINTERVAL);
     connect(&timer,SIGNAL(timeout()),this,SLOT(refresh()));
     timer.start();
+    flagPlay=false;
+    ui->spinBox_cols->setValue(DEFAULT_VIDEO_COLS);
+    ui->spinBox_rows->setValue(DEFAULT_VIDEO_ROWS);
+    ui->label_video->setMinimumSize(DEFAULT_VIDEO_COLS,DEFAULT_VIDEO_ROWS);
 }
 
 MainWindow::~MainWindow()
@@ -39,56 +49,102 @@ MainWindow::~MainWindow()
 
 void MainWindow::refresh()
 {
-    //|0------1------2----------------45----|
-    QString strTotalBoxStaus;
-    for(int i=0;i<frameBoxLife.size();i++)
+    if(flagPlay)
     {
-        QPoint pos = (ui->radioButton_start->pos() + (1.0-(frameBoxLife[i]/FRAMEBOX_TTL)) * (ui->radioButton_end->pos()-ui->radioButton_start->pos()));
-        frameBox[i]->move(pos);
-        frameImg[i]->move(pos+FRAMEINS_SHIFT);
-        strTotalBoxStaus+=QString::number(frameBoxLife[i]);
-        strTotalBoxStaus+=' ';
-        frameBoxLife[i] -= FRAMEINTERVAL;
-        if(frameBoxLife[i] <= 0)
+        //|0------1------2----------------45----|
+        QString strTotalBoxStaus;
+        for(int i=0;i<frameBoxLife.size();i++)
         {
-            frameBoxLife.remove(i);
-            delete frameBox[i];
-            frameBox.remove(i);
-            delete frameImg[i];
-            frameImg.remove(i);
+            QPoint pos = (ui->radioButton_start->pos() + (1.0-(frameBoxLife[i]/FRAMEBOX_TTL)) * (ui->radioButton_end->pos()-ui->radioButton_start->pos()));
+            frameBox[i]->move(pos);
+            frameImg[i]->move(pos+FRAMEINS_SHIFT);
+            strTotalBoxStaus+=QString::number(frameBoxLife[i]);
+            strTotalBoxStaus+=' ';
+            frameBoxLife[i] -= FRAMEINTERVAL;
+            if(frameBoxLife[i] <= 0)
+                delSnapshot(i);
         }
-    }
 #ifdef PRINTDEBUG
-    qDebug() << strTotalBoxStaus;
+        qDebug() << strTotalBoxStaus;
 #endif
-    //video play
-    cv::Mat mat;
-    if (video.isOpened())
-    {
-        video >> mat;
-        mainVideo = QtOcv::mat2Image(mat);
-        ui->label_video->setPixmap(QPixmap::fromImage(mainVideo));
+        //video play
+        cv::Mat mat;
+        if (video.isOpened())
+        {
+            video >> mat;
+            if (!mat.empty())
+            {
+                mainVideo = QtOcv::mat2Image(mat);
+                ui->label_video->setPixmap(QPixmap::fromImage(mainVideo).scaled(ui->spinBox_cols->value(),ui->spinBox_rows->value()));
+            }
+            else
+                flagPlay=false;
+        }
     }
 }
 
-void MainWindow::on_pushButton_snapshot_clicked()
+/*
+ * consider the style in different situation here
+ */
+int MainWindow::addSnapshot(situation s)
 {
+    QString buttonText,buttonStyle;
+    switch(s)
+    {
+    default:return 1;
+    case BAD_IMG:buttonText="Bad Img";
+        buttonStyle="color:black; background-color: yellow";
+        break;
+    case VERYBAD_IMG:buttonText="Very Bad";
+        buttonStyle="color:white; background-color: blue";
+        break;
+    case OMG:buttonText=tr("有毛病");
+        buttonStyle="color:white; background-color: red";
+        break;
+    }
     if (frameBoxLife.size()<FRAMEBOX_MAXNUM)
     {
         int ind=frameBoxLife.size();
         frameBoxLife << FRAMEBOX_TTL;
-        frameBox << new QLabel(QString::number(ind),this);
+        frameBox << new QPushButton(buttonText,this);
         frameBox[ind]->move(ui->radioButton_start->pos());
+        frameBox[ind]->setStyleSheet(buttonStyle);
         frameBox[ind]->show();
         frameImg << new QLabel(this);
         QImage clip = mainVideo.scaled(QSize(FRAMEIMG_W,FRAMEIMG_H));
         frameImg[ind]->resize(QSize(FRAMEIMG_W,FRAMEIMG_H));
         frameImg[ind]->setPixmap(QPixmap::fromImage(clip));
-//        frameImg[ind]->setFrameShape(QFrame::Panel);
-//        frameImg[ind]->setFrameShadow(QFrame::Raised);
-//        frameImg[ind]->setAutoFillBackground(true);
-        frameImg[ind]->show();
+        //        frameImg[ind]->setFrameShape(QFrame::Panel);
+        //        frameImg[ind]->setFrameShadow(QFrame::Raised);
+        //        frameImg[ind]->setAutoFillBackground(true);
+        frameImg[ind]->move(ui->radioButton_start->pos());
+        //frameImg[ind]->show();
+        connect(frameBox[ind],SIGNAL(pressed()),frameImg[ind],SLOT(show()));
+        connect(frameBox[ind],SIGNAL(released()),frameImg[ind],SLOT(hide()));
     }
+    return 0;
+}
+
+int MainWindow::delSnapshot(int ind)
+{
+    disconnect(frameBox[ind],SIGNAL(pressed()),frameImg[ind],SLOT(show()));
+    disconnect(frameBox[ind],SIGNAL(released()),frameImg[ind],SLOT(hide()));
+    frameBoxLife.remove(ind);
+    delete frameBox[ind];
+    frameBox.remove(ind);
+    delete frameImg[ind];
+    frameImg.remove(ind);
+    return 0;
+}
+
+/*
+ * judge the img here
+ * Is an example in dif case
+ */
+void MainWindow::on_pushButton_snapshot_clicked()
+{
+    if(flagPlay)
+        addSnapshot(situation(qrand()%3));
 }
 
 void MainWindow::on_pushButton_openVideo_clicked()
@@ -103,6 +159,16 @@ void MainWindow::on_pushButton_openVideo_clicked()
             refresh();
         }
         else
-           ui->statusBar->showMessage(videoFileName + " is not a good VIDEO file");
+            ui->statusBar->showMessage(videoFileName + " is not a good VIDEO file",1000);
     }
+}
+
+void MainWindow::on_pushButton_start_clicked()
+{
+    flagPlay = true;
+}
+
+void MainWindow::on_pushButton_stop_clicked()
+{
+    flagPlay = false;
 }

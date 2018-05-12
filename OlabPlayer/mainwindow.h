@@ -7,6 +7,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -26,15 +28,30 @@ private slots:
 
     void on_pushButton_openVideo_clicked();
 
+    void on_pushButton_start_clicked();
+
+    void on_pushButton_stop_clicked();
+
 private:
+
+    //All kinds of situations
+    enum situation{
+        BAD_IMG,
+        VERYBAD_IMG,
+        OMG
+    };
+
     Ui::MainWindow *ui;
     QTimer timer;
     QVector<int> frameBoxLife;
-    QVector<QLabel*> frameBox;
+    QVector<QPushButton*> frameBox;
     QVector<QLabel*> frameImg;
 
+    int addSnapshot(situation s);
+    int delSnapshot(int ind);
     cv::VideoCapture video;
     QImage mainVideo;
+    bool flagPlay;
 };
 
 #endif // MAINWINDOW_H
