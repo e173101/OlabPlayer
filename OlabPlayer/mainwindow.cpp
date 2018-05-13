@@ -17,7 +17,7 @@
 #define DEFAULT_VIDEO_COLS 640
 #define DEFAULT_VIDEO_ROWS 480
 
-#define MAT_BUF_SIZE 100
+#define MAT_BUF_SIZE 10
 
 //#define PRINTDEBUG
 
@@ -218,6 +218,7 @@ void MainWindow::on_pushButton_openVideo_clicked()
         }
     }
 }
+
 void MainWindow::on_pushButton_pause_clicked()
 {
     flagPlay = !flagPlay;
