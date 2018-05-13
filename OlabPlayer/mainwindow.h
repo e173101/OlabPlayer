@@ -29,9 +29,7 @@ private slots:
 
     void on_pushButton_openVideo_clicked();
 
-    void on_pushButton_start_clicked();
-
-    void on_pushButton_stop_clicked();
+    void on_pushButton_pause_clicked();
 
 private:
 

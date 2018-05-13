@@ -1,7 +1,12 @@
 #include "matproducer.h"
 
 
-MatProducer::MatProducer(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame)
+MatProducer::MatProducer()
+{
+
+}
+
+void MatProducer::set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame)
 {
     this->video=video;
     this->matBuf=matBuf;
@@ -11,17 +16,26 @@ MatProducer::MatProducer(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame)
 
 void MatProducer::run()
 {
-    Mat mat;
+    //Mat mat; //if you struct mat here and use cameral funning thing will hapen :)
     while(runFlag)
     {
         if(matBuf->size()<maxFrame)
         {
-            video->read(mat);
-            if(!mat.empty())
-                matBuf->enqueue(mat);
+            if(video->isOpened())
+            {
+                Mat mat;    //new mat every time
+                mutex.lock();
+                video->read(mat);
+                if(!mat.empty())
+                {
+                    matBuf->enqueue(mat);
+                }
+                mutex.unlock();
+            }
             else
                 runFlag = false;
         }
+        msleep(1);
     }
 }
 

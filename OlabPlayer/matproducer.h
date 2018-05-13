@@ -4,15 +4,19 @@
 #include <opencv2/highgui.hpp>
 #include <QThread>
 #include <QQueue>
+#include <QMutex>
 
 using namespace cv;
 
 class MatProducer : public QThread
 {
 public:
-    MatProducer(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame);
+    MatProducer();
+    void set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame);
     void stop(void);
     void run();
+    QMutex mutex;
+
 
 private:
     VideoCapture *video;
