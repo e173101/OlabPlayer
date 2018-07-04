@@ -3,6 +3,11 @@
 
 #include <QMainWindow>
 #include <QtGui>
+#include <QPushButton>
+#include <QLabel>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <string>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>

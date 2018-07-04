@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    //QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     ui->setupUi(this);
     timer.setInterval(FRAMEINTERVAL);
     connect(&timer,SIGNAL(timeout()),this,SLOT(refresh()));
