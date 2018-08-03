@@ -66,11 +66,11 @@ private:
     int maxBufSize;
 
     /**********************************
-     *
-     *
-     */
-    CascadeClassifier eye_cascade;  //载入分类器
-    CascadeClassifier face_cascade;    //载入分类器
+     *Add Something here
+     **********************************/
+    int aNember;
+
+    /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 };
 

@@ -47,18 +47,12 @@ MainWindow::MainWindow(QWidget *parent) :
     maxBufSize = MAT_BUF_SIZE;
     matProThread = new MatProducer;
 
+    /******************************
+     * Add Init here
+     * ***************************/
 
-    //加载分类训练器，OpenCv官方文档提供的xml文档，可以直接调用
-    //xml文档路径  opencv\sources\data\haarcascades
 
-    if (!eye_cascade.load("C:OpenCV\\2.4.13\\etc\\haarcascades\\haarcascade_eye.xml"))  //需要将xml文档放在自己指定的路径下
-    {
-       qDebug( "Load haarcascade_eye.xml failed!" );
-    }
-    if (!face_cascade.load("C:OpenCV\\2.4.13\\etc\\haarcascades\\haarcascade_frontalface_alt.xml"))  //需要将xml文档放在自己指定的路径下
-    {
-       qDebug( "Load haarcascade_eye.xml failed!" );
-    }
+    /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 }
 
 MainWindow::~MainWindow()
@@ -107,22 +101,8 @@ void MainWindow::refresh()
                 //*************************************************************
                 //add your Algorithm here
                 mat = mat;
-//                vector<Rect> faceRect;
-//                //cvtColor(mat, mat, CV_BGR2GRAY);//转为灰度图
-//                //face_cascade.detectMultiScale(mat, faceRect, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-//                for (size_t i = 0; i < faceRect.size(); i++)
-//                {
-//                    rectangle(mat, faceRect[i], Scalar(0, 0, 255));      //用矩形画出检测到的位置
-//                }
-//                //Mat face = mat(faceRect[0]);
-//                //Mat half_face=face(Range(0,face.rows*0.6),Range(0,face.cols));
-//                //eye_cascade.detectMultiScale(half_face, faceRect, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-//                for (size_t i = 0; i < faceRect.size(); i++)
-//                {
-//                    rectangle(half_face, faceRect[i], Scalar(0, 0, 255));      //用矩形画出检测到的位置
-//                }
+
                 //*************************************************************
-                //imshow("o",mat);
                 mainVideo = QtOcv::mat2Image(mat);
                 ui->label_video->setPixmap(QPixmap::fromImage(mainVideo).scaled(ui->spinBox_cols->value(),ui->spinBox_rows->value()));
             }
@@ -132,7 +112,9 @@ void MainWindow::refresh()
         else
             matProThread->mutex.unlock();
         G_fpsCnt ++;
-        ui->statusBar->showMessage("Buf of mats:"+QString::number(matBuf.size())+" fps:"+QString::number(1000.0/FRAMEINTERVAL) + "real fps:" +QString::number(G_fps));
+        ui->statusBar->showMessage("Buf of mats:"+QString::number(matBuf.size())+\
+                                   " target_fps:"+QString::number(1000.0/FRAMEINTERVAL) + \
+                                   " real_fps:" +QString::number(G_fps));
     }
 }
 
