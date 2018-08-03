@@ -12,6 +12,9 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 
+#include "opencv2/objdetect/objdetect.hpp"
+#include "opencv2/imgproc.hpp"
+
 #include "matproducer.h"
 
 
@@ -60,6 +63,14 @@ private:
     MatProducer *matProThread;
     QQueue<Mat> matBuf;
     int maxBufSize;
+
+    /**********************************
+     *
+     *
+     */
+    CascadeClassifier eye_cascade;  //载入分类器
+    CascadeClassifier face_cascade;    //载入分类器
+
 };
 
 #endif // MAINWINDOW_H
