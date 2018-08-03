@@ -32,6 +32,7 @@ public:
 
 private slots:
     void refresh(void);
+    void refresh_1s(void);
 
     void on_pushButton_snapshot_clicked();
 
@@ -49,7 +50,7 @@ private:
     };
 
     Ui::MainWindow *ui;
-    QTimer timer;
+    QTimer timer,timer_1s;
     QVector<int> frameBoxLife;
     QVector<QPushButton*> frameBox;
     QVector<QLabel*> frameImg;

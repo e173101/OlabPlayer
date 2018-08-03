@@ -7,6 +7,8 @@
 #include "ui_mainwindow.h"
 #include "cvmatandqimage.h"
 
+#include <windows.h>
+
 #define FRAMEINTERVAL 1.0                  //units are ms
 #define FRAMEBOX_MAXNUM 10
 #define FRAMEBOX_TTL (FRAMEINTERVAL*100)    //time to live, units are ms
@@ -21,6 +23,8 @@
 
 //#define PRINTDEBUG
 
+int G_fps = 0,G_fpsCnt = 0;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,6 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
     timer.setInterval(FRAMEINTERVAL);
     connect(&timer,SIGNAL(timeout()),this,SLOT(refresh()));
     timer.start();
+
+    timer_1s.setInterval(1000);
+    connect(&timer_1s,SIGNAL(timeout()),this,SLOT(refresh_1s()));
+    timer_1s.start();
+
     flagPlay=false;
     ui->spinBox_cols->setValue(DEFAULT_VIDEO_COLS);
     ui->spinBox_rows->setValue(DEFAULT_VIDEO_ROWS);
@@ -98,23 +107,23 @@ void MainWindow::refresh()
                 //*************************************************************
                 //add your Algorithm here
                 mat = mat;
-                vector<Rect> faceRect;
-                cvtColor(mat, mat, CV_BGR2GRAY);//转为灰度图
-                face_cascade.detectMultiScale(mat, faceRect, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-                for (size_t i = 0; i < faceRect.size(); i++)
-                {
-                    rectangle(mat, faceRect[i], Scalar(0, 0, 255));      //用矩形画出检测到的位置
-                }
-                Mat face = mat(faceRect[0]);
-                Mat half_face=face(Range(0,face.rows*0.6),Range(0,face.cols));
-                eye_cascade.detectMultiScale(half_face, faceRect, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
-                for (size_t i = 0; i < faceRect.size(); i++)
-                {
-                    rectangle(half_face, faceRect[i], Scalar(0, 0, 255));      //用矩形画出检测到的位置
-                }
+//                vector<Rect> faceRect;
+//                //cvtColor(mat, mat, CV_BGR2GRAY);//转为灰度图
+//                //face_cascade.detectMultiScale(mat, faceRect, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+//                for (size_t i = 0; i < faceRect.size(); i++)
+//                {
+//                    rectangle(mat, faceRect[i], Scalar(0, 0, 255));      //用矩形画出检测到的位置
+//                }
+//                //Mat face = mat(faceRect[0]);
+//                //Mat half_face=face(Range(0,face.rows*0.6),Range(0,face.cols));
+//                //eye_cascade.detectMultiScale(half_face, faceRect, 1.1, 2, 0 | CV_HAAR_SCALE_IMAGE, Size(30, 30));
+//                for (size_t i = 0; i < faceRect.size(); i++)
+//                {
+//                    rectangle(half_face, faceRect[i], Scalar(0, 0, 255));      //用矩形画出检测到的位置
+//                }
                 //*************************************************************
-                imshow("o",mat);
-                mainVideo = QtOcv::mat2Image(face);
+                //imshow("o",mat);
+                mainVideo = QtOcv::mat2Image(mat);
                 ui->label_video->setPixmap(QPixmap::fromImage(mainVideo).scaled(ui->spinBox_cols->value(),ui->spinBox_rows->value()));
             }
             else
@@ -122,11 +131,19 @@ void MainWindow::refresh()
         }
         else
             matProThread->mutex.unlock();
-
-        ui->statusBar->showMessage("Buf of mats:"+QString::number(matBuf.size())+" fps:"+QString::number(1000.0/FRAMEINTERVAL));
+        G_fpsCnt ++;
+        ui->statusBar->showMessage("Buf of mats:"+QString::number(matBuf.size())+" fps:"+QString::number(1000.0/FRAMEINTERVAL) + "real fps:" +QString::number(G_fps));
     }
 }
 
+/*
+ * redefine the FRAMEINTERVAL to change the speed of refreash action
+ */
+void MainWindow::refresh_1s()
+{
+    G_fps = G_fpsCnt;
+    G_fpsCnt = 0;
+}
 /*
  * consider the style in different situation here
  */
