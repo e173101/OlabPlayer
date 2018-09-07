@@ -1,4 +1,9 @@
+/* 视频生产者
+ *
+ *
+ */
 #include "matproducer.h"
+
 
 
 MatProducer::MatProducer()
@@ -6,11 +11,14 @@ MatProducer::MatProducer()
 
 }
 
-void MatProducer::set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame)
+void MatProducer::set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame, bool resizeFlat, int resizeCols, int resizeRows)
 {
     this->video=video;
     this->matBuf=matBuf;
     this->maxFrame=maxFrame;
+    this->resizeFlag=resizeFlat;
+    this->resizeCols=resizeCols;
+    this->resizeRows=resizeRows;
     runFlag = true;
 }
 
@@ -28,6 +36,8 @@ void MatProducer::run()
                 video->read(mat);
                 if(!mat.empty())
                 {
+                    if(resizeFlag)
+                        cv::resize(mat,mat,Size(resizeCols,resizeRows));
                     matBuf->enqueue(mat);
                 }
                 mutex.unlock();

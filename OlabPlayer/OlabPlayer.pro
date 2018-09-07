@@ -39,5 +39,14 @@ FORMS += \
 
 
 #OpenCV
-INCLUDEPATH += C:/OpenCV/2.4.13/include
-LIBS += C:/OpenCV/2.4.13/lib/lib*.a
+#MINGW
+#INCLUDEPATH += C:/OpenCV/2.4.13/include
+#LIBS += C:/OpenCV/2.4.13/lib/lib*.a
+#VS
+
+
+INCLUDEPATH += \
+        E:/OpenCV/vc/342/build/include
+
+LIBS += \
+        E:/OpenCV/vc/342/build/x64/vc14/lib/opencv_world342.lib

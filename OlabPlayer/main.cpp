@@ -1,3 +1,7 @@
+/*验证OPENCV视频算法用播放器
+ *
+ */
+
 #include "mainwindow.h"
 #include <QApplication>
 

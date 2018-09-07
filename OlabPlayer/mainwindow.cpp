@@ -1,5 +1,7 @@
 /*
  * mainwindow.cpp
+ * 主窗口
+ * Last UPdate: atian 2018/9/7
  *
  */
 
@@ -9,7 +11,7 @@
 
 #include <windows.h>
 
-#define FRAMEINTERVAL 1.0                  //units are ms
+#define FRAMEINTERVAL 10.0                  //units are ms, it change the target fps, 控制帧率！！！
 #define FRAMEBOX_MAXNUM 10
 #define FRAMEBOX_TTL (FRAMEINTERVAL*100)    //time to live, units are ms
 #define FRAMEIMG_H 160
@@ -74,6 +76,7 @@ MainWindow::~MainWindow()
 
 /*
  * redefine the FRAMEINTERVAL to change the speed of refreash action
+ *
  */
 void MainWindow::refresh()
 {
@@ -141,7 +144,7 @@ int MainWindow::addSnapshot(situation s)
     case VERYBAD_IMG:buttonText="Very Bad";
         buttonStyle="color:white; background-color: blue";
         break;
-    case OMG:buttonText=tr("有毛病");
+    case OMG:buttonText=tr("someProble");
         buttonStyle="color:white; background-color: red";
         break;
     }
