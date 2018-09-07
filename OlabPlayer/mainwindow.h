@@ -40,32 +40,16 @@ private slots:
 
     void on_pushButton_pause_clicked();
 
-    void on_pushButton_close_clicked();
+    void on_radioButton_clicked(bool checked);
 
 private:
 
-    //All kinds of situations
-    enum situation{
-        BAD_IMG,
-        VERYBAD_IMG,
-        OMG
-    };
-
     Ui::MainWindow *ui;
     QTimer timer,timer_1s;
-    QVector<int> frameBoxLife;
-    QVector<QPushButton*> frameBox;
-    QVector<QLabel*> frameImg;
-
-    int addSnapshot(situation s);
-    int delSnapshot(int ind);
-    cv::VideoCapture video;
     QImage mainVideo;
-    bool flagPlay;
-
-    MatProducer *matProThread;
-    QQueue<Mat> matBuf;
+    MatProducer matProThread;
     int maxBufSize;
+    int fps;
 
     /**********************************
      *Add Something here

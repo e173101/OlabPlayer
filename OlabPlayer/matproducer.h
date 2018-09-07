@@ -5,7 +5,7 @@
 #include <opencv2/imgproc.hpp>
 #include <QThread>
 #include <QQueue>
-#include <QMutex>
+#include "matcooker.h"
 
 using namespace cv;
 
@@ -13,20 +13,22 @@ class MatProducer : public QThread
 {
 public:
     MatProducer();
-    void set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame, bool resizeFlag = true, int resizeCols = 640, int resizeRows = 480);
+    void set(int maxBufSize);
+    void setWaitUI(bool wait);
+    void getOneMat(void);
     void stop(void);
     void run();
-    QMutex mutex;
-
+    VideoCapture video;
+    QQueue<Mat> matBuf;
+    Mat mat;
+    int frameNum;
 
 private:
-    VideoCapture *video;
-    QQueue<Mat> *matBuf;
-    int maxFrame;
+    int maxBufSize;
+    volatile bool waitUIFlag;
     volatile bool runFlag;
-    bool resizeFlag;
-    int resizeCols;
-    int resizeRows;
+    volatile bool UItakenFlag;
+    MatCooker matcooker;
 };
 
 #endif // MATPRODUCER_H

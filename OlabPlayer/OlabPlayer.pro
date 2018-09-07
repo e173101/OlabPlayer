@@ -27,12 +27,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     cvmatandqimage.cpp \
-    matproducer.cpp
+    matproducer.cpp \
+    matcooker.cpp
 
 HEADERS += \
         mainwindow.h \
     cvmatandqimage.h \
-    matproducer.h
+    matproducer.h \
+    matcooker.h
 
 FORMS += \
         mainwindow.ui
@@ -49,4 +51,4 @@ INCLUDEPATH += \
         E:/OpenCV/vc/342/build/include
 
 LIBS += \
-        E:/OpenCV/vc/342/build/x64/vc14/lib/opencv_world342.lib
+        E:/OpenCV/vc/342/build/x64/vc14/lib/opencv_world342d.lib

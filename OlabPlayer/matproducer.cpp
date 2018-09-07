@@ -1,9 +1,9 @@
 /* 视频生产者
+ * 输入视频的路径，尽力把所有Mat传给matcooker
  *
  *
  */
 #include "matproducer.h"
-
 
 
 MatProducer::MatProducer()
@@ -11,42 +11,69 @@ MatProducer::MatProducer()
 
 }
 
-void MatProducer::set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame, bool resizeFlat, int resizeCols, int resizeRows)
+void MatProducer::set(int maxBufSize)
 {
-    this->video=video;
-    this->matBuf=matBuf;
-    this->maxFrame=maxFrame;
-    this->resizeFlag=resizeFlat;
-    this->resizeCols=resizeCols;
-    this->resizeRows=resizeRows;
+    this->maxBufSize=maxBufSize;
     runFlag = true;
+    setWaitUI(true);
+}
+
+void MatProducer::setWaitUI(bool wait)
+{
+    this->waitUIFlag = wait;
 }
 
 void MatProducer::run()
 {
-    //Mat mat; //if you struct mat here and use cameral funning thing will hapen :)
+    //if you struct mat here and use cameral funning thing will hapen :)
+    UItakenFlag = false;
+    frameNum=0;
     while(runFlag)
     {
-        if(matBuf->size()<maxFrame)
+        //queue empty
+        if(matBuf.size()<maxBufSize)
         {
-            if(video->isOpened())
+            if(video.isOpened())
             {
                 Mat mat;    //new mat every time
-                mutex.lock();
-                video->read(mat);
+                video.read(mat);
                 if(!mat.empty())
                 {
-                    if(resizeFlag)
-                        cv::resize(mat,mat,Size(resizeCols,resizeRows));
-                    matBuf->enqueue(mat);
+                    matBuf.enqueue(mat);
                 }
-                mutex.unlock();
             }
             else
                 runFlag = false;
         }
-        msleep(1);
+        //queue full
+        else
+        {
+            if(waitUIFlag)
+            {
+                if(!UItakenFlag)    //haven taked
+                {
+                    matBuf[0].copyTo(this->mat);
+                    mat = matcooker.cook(mat);
+                    matBuf.dequeue();
+                    UItakenFlag = true;
+                    frameNum++;
+                }
+                msleep(1);
+            }
+            else
+            {
+                mat = matcooker.cook(mat);
+                frameNum++;
+                matBuf.dequeue();
+            }
+
+        }
     }
+}
+
+void MatProducer::getOneMat(void)
+{
+    UItakenFlag = false;
 }
 
 void MatProducer::stop()
