@@ -13,7 +13,7 @@ class MatProducer : public QThread
 {
 public:
     MatProducer();
-    void set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame, bool resizeFlag = true, int resizeCols = 640, int resizeRows = 320);
+    void set(VideoCapture *video, QQueue<Mat> *matBuf, int maxFrame, bool resizeFlag = true, int resizeCols = 640, int resizeRows = 480);
     void stop(void);
     void run();
     QMutex mutex;

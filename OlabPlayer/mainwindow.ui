@@ -41,6 +41,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="pushButton_close">
+        <property name="text">
+         <string>close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QSpinBox" name="spinBox_cols">
         <property name="minimum">
          <number>120</number>
@@ -123,7 +130,6 @@
    </layout>
    <zorder>label_video</zorder>
    <zorder>verticalSpacer</zorder>
-   <zorder>horizontalLayoutWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
