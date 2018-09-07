@@ -48,25 +48,27 @@ void MatProducer::run()
         //queue full
         else
         {
-            if(waitUIFlag)
+            if(!matBuf.empty())
             {
-                if(!UItakenFlag)    //haven taked
+                if(waitUIFlag)
                 {
-                    matBuf[0].copyTo(this->mat);
-                    mat = matcooker.cook(mat);
-                    matBuf.dequeue();
-                    UItakenFlag = true;
-                    frameNum++;
+                    if(!UItakenFlag)    //haven taked
+                    {
+                        matBuf[0].copyTo(this->mat);
+                        mat = matcooker.cook(mat);
+                        matBuf.dequeue();
+                        UItakenFlag = true;
+                        frameNum++;
+                    }
+                    msleep(1);
                 }
-                msleep(1);
+                else
+                {
+                    mat = matcooker.cook(mat);
+                    frameNum++;
+                    matBuf.dequeue();
+                }
             }
-            else
-            {
-                mat = matcooker.cook(mat);
-                frameNum++;
-                matBuf.dequeue();
-            }
-
         }
     }
 }
