@@ -40,7 +40,7 @@ private slots:
 
     void on_pushButton_pause_clicked();
 
-    void on_radioButton_clicked(bool checked);
+    void on_radioButton_clicked();
 
 private:
 

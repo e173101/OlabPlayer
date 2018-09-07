@@ -10,8 +10,6 @@
 #include "ui_mainwindow.h"
 #include "cvmatandqimage.h"
 
-#include <windows.h>
-
 #define FRAMEINTERVAL 50.0                  //units are ms, it change the target fps, 控制显示帧率！！只是显示！！
 
 #define DEFAULT_VIDEO_COLS 640
@@ -99,12 +97,13 @@ void MainWindow::refresh_1s()
 }
 
 /*
- * judge the img here
- * Is an example in dif case
  */
 void MainWindow::on_pushButton_snapshot_clicked()
 {
-
+    if(!matProThread.mat.empty())
+    {
+        imwrite("a.jpg",matProThread.mat);
+    }
 }
 
 void MainWindow::on_pushButton_openVideo_clicked()
@@ -169,7 +168,7 @@ void MainWindow::on_pushButton_pause_clicked()
         timer.start();
 }
 
-void MainWindow::on_radioButton_clicked(bool checked)
+void MainWindow::on_radioButton_clicked()
 {
     matProThread.setWaitUI(ui->radioButton->isChecked());
 }
