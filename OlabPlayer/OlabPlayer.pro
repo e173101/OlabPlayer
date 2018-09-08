@@ -50,5 +50,11 @@ FORMS += \
 INCLUDEPATH += \
         E:/OpenCV/vc/342/build/include
 
+CONFIG(debug, debug|release): {
 LIBS += \
         E:/OpenCV/vc/342/build/x64/vc14/lib/opencv_world342d.lib
+}
+else:{
+LIBS += \
+        E:/OpenCV/vc/342/build/x64/vc14/lib/opencv_world342.lib
+}
