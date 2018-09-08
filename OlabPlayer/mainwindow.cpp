@@ -10,7 +10,7 @@
 #include "ui_mainwindow.h"
 #include "cvmatandqimage.h"
 
-#define FRAMEINTERVAL 50.0                  //units are ms, it change the target fps, 控制显示帧率！！只是显示！！
+#define FRAMEINTERVAL 40.0                  //units are ms, it change the target fps, 控制显示帧率！！只是显示！！
 
 #define DEFAULT_VIDEO_COLS 640
 #define DEFAULT_VIDEO_ROWS 480
@@ -71,7 +71,9 @@ void MainWindow::refresh()
         cv::Mat mat = matProThread.mat;
         if (!mat.empty())
         {
+            matProThread.mutex.lock();
             mainVideo = QtOcv::mat2Image(mat);
+            matProThread.mutex.unlock();
             ui->label_video->setPixmap(QPixmap::fromImage(mainVideo).scaled(ui->spinBox_cols->value(),ui->spinBox_rows->value()));
         }
     }

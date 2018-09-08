@@ -55,7 +55,9 @@ void MatProducer::run()
                     if(!UItakenFlag)    //haven taked
                     {
                         matBuf[0].copyTo(this->mat);
+                        mutex.lock();
                         mat = matcooker.cook(mat);
+                        mutex.unlock();
                         matBuf.dequeue();
                         UItakenFlag = true;
                         frameNum++;
@@ -75,7 +77,10 @@ void MatProducer::run()
 
 void MatProducer::getOneMat(void)
 {
-    UItakenFlag = false;
+    if(UItakenFlag)
+    {
+        UItakenFlag = false;
+    }
 }
 
 void MatProducer::stop()

@@ -5,6 +5,7 @@
 #include <opencv2/imgproc.hpp>
 #include <QThread>
 #include <QQueue>
+#include <QMutex>
 #include "matcooker.h"
 
 using namespace cv;
@@ -20,6 +21,7 @@ public:
     void run();
     VideoCapture video;
     QQueue<Mat> matBuf;
+    QMutex mutex;
     Mat mat;
     int frameNum;
 
