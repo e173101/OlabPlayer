@@ -119,11 +119,11 @@ void MainWindow::on_pushButton_openVideo_clicked()
 
     //open
     //|-------------|
-    //|1 camerel    |
+    //|1 camere     |
     //|2 file       |
     //|-------------|
     QStringList items;
-    items << tr("Cameral") << tr("File") ;
+    items << tr("Camera") << tr("File") ;
     bool ok;
     QString item = QInputDialog::getItem(this, tr("Select a input:"),
                                          tr("input:"), items, 0, false, &ok);
@@ -145,18 +145,18 @@ void MainWindow::on_pushButton_openVideo_clicked()
                     ui->statusBar->showMessage(videoFileName + " is not a good VIDEO file",1000);
             }
         }
-        //Open the Cameral with index 0
-        if("Cameral"==item)
+        //Open the Camera with index 0
+        if("Camera"==item)
         {
             matProThread.video = cv::VideoCapture(0);
             if (matProThread.video.isOpened())
             {
-                ui->statusBar->showMessage("Open file cameral 0");
+                ui->statusBar->showMessage("Open file camera 0");
                 matProThread.set(maxBufSize);
                 matProThread.start();
             }
             else
-                ui->statusBar->showMessage("can't open cameral 0",1000);
+                ui->statusBar->showMessage("can't open camera 0",1000);
 
         }
     }
