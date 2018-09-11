@@ -70,12 +70,12 @@ void MainWindow::refresh()
     if(ui->radioButton->isChecked())
     {
         matProThread.getOneMat();
+        matProThread.mutex.lock();
         cv::Mat mat = matProThread.mat;
+        matProThread.mutex.unlock();
         if (!mat.empty())
         {
-            matProThread.mutex.lock();
             mainVideo = QtOcv::mat2Image(mat);
-            matProThread.mutex.unlock();
             ui->label_video->setPixmap(QPixmap::fromImage(mainVideo).scaled(ui->spinBox_cols->value(),ui->spinBox_rows->value()));
         }
     }
