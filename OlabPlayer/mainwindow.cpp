@@ -17,6 +17,8 @@
 
 #define MAT_BUF_SIZE 10
 
+#define SNAP_SHOT_PATH "C:/Users/Public/Pictures/"
+
 //#define PRINTDEBUG
 
 
@@ -60,7 +62,7 @@ MainWindow::~MainWindow()
 
 /*
  * redefine the FRAMEINTERVAL to change the speed of refreash action
- *
+ * every 1~100 ms
  */
 void MainWindow::refresh()
 {
@@ -86,6 +88,7 @@ void MainWindow::refresh()
 
 /*
  * redefine the FRAMEINTERVAL to change the speed of refreash action
+ * fixed every 1 second
  */
 void MainWindow::refresh_1s()
 {
@@ -99,12 +102,16 @@ void MainWindow::refresh_1s()
 }
 
 /*
+ * Save Img to SNAP_SHOT_PATH
  */
 void MainWindow::on_pushButton_snapshot_clicked()
 {
     if(!matProThread.mat.empty())
     {
-        imwrite("a.jpg",matProThread.mat);
+        QString imName;
+        imName = QDate::currentDate().toString("yyyy_MM_dd")+QTime::currentTime().toString("_HH_mm_ss")+".jpg";
+        imName.insert(0,SNAP_SHOT_PATH);
+        imwrite(imName.toStdString(),matProThread.mat);
     }
 }
 
