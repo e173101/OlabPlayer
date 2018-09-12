@@ -5,10 +5,12 @@ MatCooker::MatCooker()
 
 }
 
-/* brief: the place you Test your algorithm here
+/****
+ * @brief: the place you Test your algorithm here
  * @param mat: what you want to do for me？
  * @retrun mat: algorithm result
- */
+ ****/
+
 
 Mat MatCooker::cook(Mat mat)
 {

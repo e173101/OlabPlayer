@@ -1,13 +1,14 @@
 #ifndef MATPRODUCER_H
 #define MATPRODUCER_H
+#include <vector>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <QThread>
-#include <QQueue>
 #include <QMutex>
 #include "matcooker.h"
 
+using namespace std;
 using namespace cv;
 
 class MatProducer : public QThread
@@ -20,7 +21,7 @@ public:
     void stop(void);
     void run();
     VideoCapture video;
-    QQueue<Mat> matBuf;
+    vector<Mat> matBuf;
     QMutex mutex;
     Mat mat;
     int frameNum;

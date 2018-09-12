@@ -39,7 +39,7 @@ void MatProducer::run()
                 video.read(mat);
                 if(!mat.empty())
                 {
-                    matBuf.enqueue(mat);
+                    matBuf.push_back(mat);  //enqueue
                 }
             }
             else
@@ -54,12 +54,13 @@ void MatProducer::run()
                 {
                     if(!UItakenFlag)    //haven taked
                     {
-                        matBuf[0].copyTo(this->mat);
                         mutex.lock();
+                        matBuf[0].copyTo(this->mat);
                         mat = matcooker.cook(mat);
                         mutex.unlock();
-                        matBuf.dequeue();
+                        matBuf.erase(matBuf.begin());   //dequeue
                         UItakenFlag = true;
+                        //cook ready UI can use the mat
                         frameNum++;
                     }
                     msleep(1);
@@ -68,13 +69,14 @@ void MatProducer::run()
                 {
                     mat = matcooker.cook(mat);
                     frameNum++;
-                    matBuf.dequeue();
+                    matBuf.erase(matBuf.begin()); //dequeue
                 }
             }
         }
     }
 }
 
+//tell the thread I'd read the mat
 void MatProducer::getOneMat(void)
 {
     if(UItakenFlag)

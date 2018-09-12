@@ -69,7 +69,6 @@ void MainWindow::refresh()
 
     if(ui->radioButton->isChecked())
     {
-        matProThread.getOneMat();
         matProThread.mutex.lock();
         cv::Mat mat = matProThread.mat;
         matProThread.mutex.unlock();
@@ -78,6 +77,7 @@ void MainWindow::refresh()
             mainVideo = QtOcv::mat2Image(mat);
             ui->label_video->setPixmap(QPixmap::fromImage(mainVideo).scaled(ui->spinBox_cols->value(),ui->spinBox_rows->value()));
         }
+        matProThread.getOneMat();
     }
     else
         ui->label_video->setText("Proccing Background...");
