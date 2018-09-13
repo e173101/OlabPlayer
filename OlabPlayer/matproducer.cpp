@@ -28,6 +28,7 @@ void MatProducer::run()
     //if you struct mat here and use cameral funning thing will hapen :)
     UItakenFlag = false;
     frameNum=0;
+    qDebug("cook mat begin");
     while(runFlag)
     {
         //queue empty

@@ -141,6 +141,7 @@ void MainWindow::on_pushButton_openVideo_clicked()
             QString videoFileName = QFileDialog::getOpenFileName(this, tr("Open a video file"));
             if (!videoFileName.isEmpty())
             {
+                qDebug("Opened file: %s", videoFileName.toStdString());
                 matProThread.video = cv::VideoCapture(videoFileName.toStdString());
                 if (matProThread.video.isOpened())
                 {
