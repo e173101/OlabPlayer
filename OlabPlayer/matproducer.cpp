@@ -34,6 +34,7 @@ void MatProducer::run()
                 video.read(mat);
                 mutex.unlock();
                 UItakenFlag = true;
+                matcooker.cook(mat);
                 //cook ready UI can use the mat
                 frameNum++;
             }
@@ -42,8 +43,7 @@ void MatProducer::run()
         else
         {
             video.read(mat);
-            Mat temp;
-            temp = matcooker.cook(mat);
+            matcooker.cook(mat);
             frameNum++;
         }
     }

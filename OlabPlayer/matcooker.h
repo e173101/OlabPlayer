@@ -8,7 +8,7 @@ class MatCooker
 {
 public:
     MatCooker();
-    Mat cook(Mat mat);
+    void cook(Mat mat);
 };
 
 #endif // MATCOOKER_H
