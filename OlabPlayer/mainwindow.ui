@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>822</width>
-    <height>177</height>
+    <height>262</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,13 @@
        <widget class="QLabel" name="label_videoState">
         <property name="text">
          <string>video state</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_fps">
+        <property name="text">
+         <string>fps:</string>
         </property>
        </widget>
       </item>
@@ -93,7 +100,7 @@
       <item>
        <widget class="QPushButton" name="pushButton_snapshot">
         <property name="text">
-         <string>snapshot(rand)</string>
+         <string>snapshot</string>
         </property>
        </widget>
       </item>
@@ -122,7 +129,7 @@
      <x>0</x>
      <y>0</y>
      <width>822</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

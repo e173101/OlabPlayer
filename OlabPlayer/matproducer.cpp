@@ -5,17 +5,9 @@
  */
 #include "matproducer.h"
 
-
 MatProducer::MatProducer()
 {
 
-}
-
-void MatProducer::set(int maxBufSize)
-{
-    this->maxBufSize=maxBufSize;
-    runFlag = true;
-    setWaitUI(true);
 }
 
 void MatProducer::setWaitUI(bool wait)
@@ -26,53 +18,33 @@ void MatProducer::setWaitUI(bool wait)
 void MatProducer::run()
 {
     //if you struct mat here and use cameral funning thing will hapen :)
+    runFlag = true;
+    waitUIFlag = true;
     UItakenFlag = false;
-    frameNum=0;
+    frameNum = 0;
+
     qDebug("cook mat begin");
     while(runFlag)
     {
-        //queue empty
-        if(matBuf.size()<maxBufSize)
+        if(waitUIFlag)
         {
-            if(video.isOpened())
+            if(!UItakenFlag)    //haven taked
             {
-                Mat mat;    //new mat every time
+                mutex.lock();
                 video.read(mat);
-                if(!mat.empty())
-                {
-                    matBuf.push_back(mat);  //enqueue
-                }
+                mutex.unlock();
+                UItakenFlag = true;
+                //cook ready UI can use the mat
+                frameNum++;
             }
-            else
-                runFlag = false;
+            msleep(1);
         }
-        //queue full
         else
         {
-            if(!matBuf.empty())
-            {
-                if(waitUIFlag)
-                {
-                    if(!UItakenFlag)    //haven taked
-                    {
-                        mutex.lock();
-                        matBuf[0].copyTo(this->mat);
-                        mat = matcooker.cook(mat);
-                        mutex.unlock();
-                        matBuf.erase(matBuf.begin());   //dequeue
-                        UItakenFlag = true;
-                        //cook ready UI can use the mat
-                        frameNum++;
-                    }
-                    msleep(1);
-                }
-                else
-                {
-                    mat = matcooker.cook(mat);
-                    frameNum++;
-                    matBuf.erase(matBuf.begin()); //dequeue
-                }
-            }
+            video.read(mat);
+            Mat temp;
+            temp = matcooker.cook(mat);
+            frameNum++;
         }
     }
 }

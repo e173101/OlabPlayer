@@ -15,8 +15,6 @@
 #define DEFAULT_VIDEO_COLS 640
 #define DEFAULT_VIDEO_ROWS 480
 
-#define MAT_BUF_SIZE 10
-
 #define SNAP_SHOT_PATH "C:/Users/Public/Pictures/"
 
 //#define PRINTDEBUG
@@ -37,8 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
     timer_1s.start();
 
     ui->label_video->setMinimumSize(DEFAULT_VIDEO_COLS,DEFAULT_VIDEO_ROWS);
-
-    maxBufSize = MAT_BUF_SIZE;
 
     /******************************
      * Add Init here
@@ -82,8 +78,7 @@ void MainWindow::refresh()
     else
         ui->label_video->setText("Proccing Background...");
 
-    ui->statusBar->showMessage("||Buf of frames:"+QString::number(matProThread.matBuf.size())+\
-                               "||fps:" +QString::number(fps));
+    ui->label_fps->setText("fps:" + QString::number(fps));
 }
 
 /*
@@ -146,7 +141,6 @@ void MainWindow::on_pushButton_openVideo_clicked()
                 if (matProThread.video.isOpened())
                 {
                     ui->statusBar->showMessage("Open file "+videoFileName + " Success");
-                    matProThread.set(maxBufSize);
                     matProThread.start();
                 }
                 else
@@ -160,7 +154,6 @@ void MainWindow::on_pushButton_openVideo_clicked()
             if (matProThread.video.isOpened())
             {
                 ui->statusBar->showMessage("Open file camera 0");
-                matProThread.set(maxBufSize);
                 matProThread.start();
             }
             else
