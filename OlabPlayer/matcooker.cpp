@@ -19,5 +19,9 @@ void MatCooker::cook(Mat mat)
     split(mat, imageRGB);
     rotate(imageRGB[0],imageRGB[0],1);
     flip(imageRGB[1],imageRGB[1],1);
+    Size sz = mat.size();
+    Mat R = Mat(sz,CV_8UC3);
+    randu(R,Scalar::all(0),Scalar::all(100));
     merge(imageRGB,3,mat);
+    mat = mat + R;
 }
