@@ -10,6 +10,9 @@ class MatCooker
 public:
     MatCooker();
     void cook(Mat mat);
+private:
+
+    RNG rng;
 };
 
 #endif // MATCOOKER_H
