@@ -1,11 +1,12 @@
 /* 视频生产者
  * 输入视频的路径，尽力把所有Mat传给matcooker
- *
+ * 统一大小以适应不同摄像头
  *
  */
 #include "matproducer.h"
 
-MatProducer::MatProducer()
+MatProducer::MatProducer():
+    matSize(Size(320,240))
 {
 
 }
@@ -32,7 +33,8 @@ void MatProducer::run()
             {
                 mutex.lock();
                 video.read(mat);
-                matcooker.cook(mat);
+                resize(mat,mat,matSize);
+                //matcooker.cook(mat);
                 UItakenFlag = true;
                 mutex.unlock();
                 //cook ready UI can use the mat
@@ -43,6 +45,7 @@ void MatProducer::run()
         else
         {
             video.read(mat);
+            resize(mat,mat,matSize);
             matcooker.cook(mat);
             frameNum++;
         }

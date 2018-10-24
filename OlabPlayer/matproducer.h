@@ -27,6 +27,7 @@ private:
     volatile bool waitUIFlag;
     volatile bool runFlag;
     volatile bool UItakenFlag;
+    Size matSize;
     MatCooker matcooker;
 };
 
